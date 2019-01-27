@@ -7,8 +7,10 @@
     "isomorphic-unfetch": "^3.0.0",
     "net": "^1.0.2",
     "next": "^7.0.2",
+    "rc-table": "^6.4.3",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
+    "react-paginate": "^6.2.1",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5",
     "tls": "0.0.1"
@@ -28,8 +30,5 @@
     "dev": "node server.js",
     "build": "next build",
     "start": "NODE_ENV=production node server.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  }
 }
