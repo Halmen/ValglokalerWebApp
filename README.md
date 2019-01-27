@@ -14,7 +14,7 @@ yarn dev
 ```
 
 ## Run Jest tests
-
+- not implemented for this project, just a showcase 
 ```bash
 npm run test
 # or
