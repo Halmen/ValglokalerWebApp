@@ -1,0 +1,49 @@
+{
+  "columns": [
+    {
+      "title": "County ID", "dataIndex": "county_id", "key":"county_id", "width": 100
+    },
+    {
+      "title": "County Name", "dataIndex": "county_name", "key":"county_name", "width": 100
+    },
+    {
+      "title": "Municipality ID", "dataIndex": "municipality_id", "key":"municipality_id", "width": 100
+    },
+    {
+      "title": "Municipality Name", "dataIndex": "municipality_name", "key":"municipality_name", "width": 100
+    },
+    {
+      "title": "Borough ID", "dataIndex": "borough_id", "key":"borough_id", "width": 100
+    },
+    {
+      "title": "Borough Name", "dataIndex": "borough_name", "key":"borough_name", "width": 100
+    },
+    {
+      "title": "Polling place ID", "dataIndex": "polling_place_id", "key":"polling_place_id", "width": 100
+    },
+    {
+      "title": "Polling Place name", "dataIndex": "polling_place_name", "key":"polling_place_name", "width": 100
+    },
+    {
+      "title": "Address line", "dataIndex": "address_line", "key":"address_line", "width": 100
+    },
+    {
+      "title": "Postal code", "dataIndex": "postal_code", "key":"postal_code", "width": 100
+    },
+    {
+      "title": "Area", "dataIndex": "area", "key":"area", "width": 100
+    },
+    {
+      "title": "Info text", "dataIndex": "info_text", "key":"info_text", "width": 100
+    },
+    {
+      "title": "Gps coordinates", "dataIndex": "gps_coordinates", "key":"gps_coordinates", "width": 100
+    },
+    {
+      "title": "Election day voting", "dataIndex": "election_day_voting", "key":"election_day_voting", "width": 100
+    },
+    {
+      "title": "Opening hours", "dataIndex": "opening_hours", "key":"opening_hours", "width": 100
+    }
+  ]
+}
