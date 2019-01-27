@@ -1,25 +1,19 @@
 import Layout from '../components/MyLayout'
 import {Component} from 'react'
 import React from 'react'
-import list from '../api/list'
-import ReactPaginate from 'react-paginate'
-import Table from 'rc-table';
-
-const types = require('./types.json')
-const columns = require('./columns.json')
+import weather from '../api/weather'
 
 
 class Index extends React.Component {
 
     static async getInitialProps(params) {
-
-        //This function fetches the data even if the client side JS is disabled
+        // Get the query parameter, if no city provided we use the default (Copenhagen)
+        const {city = 'Copenhagen'} = params.query
+        // Make the API request and fetch the data
         try {
-            const resp = await list.getList(null, null, null, true)
-            const counties = resp.data.entries
-            return {counties}
+            const resp = await weather.getWeather(city)
+            return {resp}
         } catch (err) {
-
             return {error: true}
         }
 
@@ -28,131 +22,83 @@ class Index extends React.Component {
     constructor(props) {
         super(props);
 
-
+        this.handleSubmit = this.handleSubmit.bind(this)
         this.handleChange = this.handleChange.bind(this)
-        this.getData = this.getData.bind(this)
-        this.handlePageClick = this.handlePageClick.bind(this)
+
         this.state = {
-            counties: !props.error ? props.counties : false,
-            type: "county_name",
-            value: "",
-            page: 1,
-            pages: null,
-            data: null
-
-        }
-
-
-    }
-
-    handlePageClick(data) {
-        const page = data.selected + 1
-        console.log(this.state.type, "-", this.state.value,"-" ,page)
-        this.getData(this.state.type, this.state.value,page)
+            def_city: props.error ? "You failed from geography, or correct spelling :P " : props.resp.city,
+            temperature: props.error ? "Go out and you'll feel it :P" : props.resp.temperature,
+            humidity: props.error ? "Like the Jungle ;) " : props.resp.humidity,
+            wind: props.error ? "Put your wet tumb up in the air and you'll know it ;)" : props.resp.wind,
+            wind_deg: props.error ? "You don't realy care" : props.resp.wind_deg,
+            city: ""
+        };
 
     }
 
     handleChange(e) {
-
-        const name = e.target.name
-        const value = e.target.value
-
-
-        if (name == "type") {
-            this.setState({type: value})
-        } else {
-            this.setState({value: value})
-        }
-        if (e.target.name == "county_name" || e.key == 'Enter') {
-
-            this.getData(this.state.type, value)
-        }
+        this.setState({city: e.target.value})
     }
 
-    async getData(type, value, page = 1) {
+    async handleSubmit(e) {
+        e.preventDefault()
 
-        console.log(type, value, page)
         try {
-
-            const resp = await list.getList(type, value)
-
+            const resp = await weather.getWeather(this.state.city)
+            history.pushState(null, null, "?city=" + this.state.city)
             this.setState({
-                data: resp.data.entries,
-                page: resp.data.page,
-                pages: resp.data.pages
+                def_city: resp.city,
+                temperature: resp.temperature,
+                humidity: resp.humidity,
+                wind: resp.wind,
+                wind_deg: resp.wind_deg
             })
-
 
         } catch (err) {
             this.setState({
-                error: true
+                def_city: "You failed from geography, or correct spelling :P ",
+                temperature: "Go out and you'll feel it :P",
+                humidity: "Like the Jungle ;)",
+                wind: "Put your wet tumb up in the air and you'll know it ;)",
+                wind_deg: "You don't realy care"
             })
         }
-        this.setState({
-            page: page,
-        })
+
     }
 
-    render(props) {
-
+    render() {
         return (
             <Layout>
                 <html lang="en">
                 <head>
                     <meta httpEquiv="content-type" content="text/html; charset=utf-8"></meta>
+                    <title>Weather widget</title>
                     <link rel="stylesheet"
                           href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
                           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
                           crossOrigin="anonymous"></link>
                 </head>
                 <body>
-
-                <div className="form-group">
-                    <select value={this.state.type} name="type" onChange={this.handleChange}>
-                        {
-                            columns.columns
-                                ? columns.columns.map((val) => (
-                                    <option key={val.key} value={val.dataIndex}>{val.title}</option> ))
-                                : <option value="">Data not found</option>
-                        }
-                    </select>
-                    {this.state.type == "county_name" ?
-                        <select name="county_name" onChange={this.handleChange}>
-                            <option value=""> Please select</option>
-                            {
-                                this.state.counties
-                                    ? this.state.counties.map((val) => (
-                                        <option key={val.nummer} value={val.navn}>{val.navn}</option> ))
-                                    : <option value="">Data not found</option>
-                            }
-                        </select>
-                        :
-                        <input type="text" name="value" value={this.state.value}
-                               placeholder="Press 'Enter' for query " onKeyPress={this.handleChange}
-                               onChange={this.handleChange}></input>
-                    }
-                    {this.state.pages?
-                    <ReactPaginate
-                        previousLabel={'<'}
-                        nextLabel={'>'}
-                        pageCount={this.state.pages}
-                        marginPagesDisplayed={0}
-                        pageRangeDisplayed={1}
-                        initialPage={this.state.page - 1}
-                        forcePage={this.state.page - 1}
-                        onPageChange={this.handlePageClick}
-                        containerClassName={'pagination'}
-                        subContainerClassName={'pages pagination'}
-                        activeClassName={'active'}
-                    /> : null
-                    }
-                    {this.state.data?
-                        <Table columns={columns.columns} data={this.state.data} />
-                    : null}
-
+                <div className="widget" style={{margin: '10px', width: '300px'}}>
+                    <div className="panel panel-info">
+                        <div className="panel-heading">Weather in <b>{this.state.def_city}</b></div>
+                        <ul className="list-group">
+                            <li className="list-group-item">Temperature: <b>{this.state.temperature}°C</b></li>
+                            <li className="list-group-item">Humidity: <b>{this.state.humidity}</b></li>
+                            <li className="list-group-item">Wind: <b>{this.state.speed} m/s {this.state.wind}
+                                ({this.state.wind_deg})</b></li>
+                            <li className="list-group-item">
+                                <form className="form-inline" onSubmit={this.handleSubmit}>
+                                    <div className="form-group">
+                                        <input type="text" className="form-control" name="city" value={this.state.city}
+                                               placeholder="City" onChange={this.handleChange}></input>
+                                    </div>
+                                    <button type="submit" value="Submit" className="btn btn-default">Search</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-
-
                 </body>
                 </html>
             </Layout>
