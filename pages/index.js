@@ -4,6 +4,7 @@ import React from 'react'
 import list from '../api/list'
 import ReactPaginate from 'react-paginate'
 import Table from 'rc-table';
+
 const columns = require('./columns.json')
 
 
@@ -95,48 +96,60 @@ class Index extends React.Component {
                 </head>
                 <body>
 
-                <div className="form-group">
-                    <select value={this.state.type} name="type" onChange={this.handleChange}>
-                        {
-                            columns.columns
-                                ? columns.columns.map((val) => (
-                                    <option key={val.key} value={val.dataIndex}>{val.title}</option> ))
-                                : <option value="">Data not found</option>
-                        }
-                    </select>
-                    {this.state.type == "county_name" ?
-                        <select name="county_name" onChange={this.handleChange}>
-                            <option value=""> Please select</option>
-                            {
-                                this.state.counties
-                                    ? this.state.counties.map((val) => (
-                                        <option key={val.nummer} value={val.navn}>{val.navn}</option> ))
-                                    : <option value="">Data not found</option>
+                <div>
+                    <div class="container">
+                        <div class="input-group">
+                            <select class="form-control" value={this.state.type} name="type"
+                                    onChange={this.handleChange}>
+                                {
+                                    columns.columns
+                                        ? columns.columns.map((val) => (
+                                            <option key={val.key} value={val.dataIndex}>{val.title}</option> ))
+                                        : <option value="">Data not found</option>
+                                }
+                            </select>
+                            <span class="input-group-addon">-</span>
+                            {this.state.type == "county_name" ?
+                                <select class="form-control" name="county_name" onChange={this.handleChange}>
+                                    <option value=""> Please select</option>
+                                    {
+                                        this.state.counties
+                                            ? this.state.counties.map((val) => (
+                                                <option key={val.nummer} value={val.navn}>{val.navn}</option> ))
+                                            : <option value="">Data not found</option>
+                                    }
+                                </select>
+                                :
+                                <input class="form-control" type="text" name="value" value={this.state.value}
+                                       placeholder="Press 'Enter' for query " onKeyPress={this.handleChange}
+                                       onChange={this.handleChange}></input>
                             }
-                        </select>
-                        :
-                        <input type="text" name="value" value={this.state.value}
-                               placeholder="Press 'Enter' for query " onKeyPress={this.handleChange}
-                               onChange={this.handleChange}></input>
-                    }
-                    {this.state.pages ?
-                        <ReactPaginate
-                            previousLabel={'<'}
-                            nextLabel={'>'}
-                            pageCount={this.state.pages}
-                            marginPagesDisplayed={0}
-                            pageRangeDisplayed={1}
-                            initialPage={this.state.page - 1}
-                            forcePage={this.state.page - 1}
-                            onPageChange={this.handlePageClick}
-                            containerClassName={'pagination'}
-                            subContainerClassName={'pages pagination'}
-                            activeClassName={'active'}
-                        /> : null
-                    }
-                    {this.state.data ?
-                        <Table columns={columns.columns} data={this.state.data} key={this.state.key}/>
-                        : null}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2 col-md-offset-5">
+                            {this.state.pages ?
+                                <ReactPaginate
+                                    previousLabel={'<'}
+                                    nextLabel={'>'}
+                                    pageCount={this.state.pages}
+                                    marginPagesDisplayed={0}
+                                    pageRangeDisplayed={3}
+                                    initialPage={this.state.page - 1}
+                                    forcePage={this.state.page - 1}
+                                    onPageChange={this.handlePageClick}
+                                    containerClassName={'pagination'}
+                                    subContainerClassName={'pages pagination'}
+                                    activeClassName={'active'}
+                                /> : null
+                            }
+                        </div>
+                    </div>
+                    <div>
+                        {this.state.data ?
+                            <Table columns={columns.columns} data={this.state.data} key={this.state.key}/>
+                            : null}
+                    </div>
                 </div>
                 </body>
                 </html>
