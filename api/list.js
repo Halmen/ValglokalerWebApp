@@ -9,7 +9,7 @@ async function getList(type, name, page = 1, init = false) {
     if (init) {
         url = `${baseUrl}/difi/geo/fylke`
     } else {
-        url = `${baseUrl}/valg/valglokaler/2017?${type}${name}&page=${page}`
+        url = `${baseUrl}/valg/valglokaler/2017?${type}=${name}&page=${page}`
     }
 
     const result = await fetch(url)

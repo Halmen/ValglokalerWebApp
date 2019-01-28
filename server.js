@@ -16,7 +16,10 @@ app.prepare()
         server.get('/', (req, res) => {
             const page = '/'
 
-            const params = {city: req.query.city}
+            const params = {type: req.query.type,
+                            value: req.query.value,
+                            page: req.query.page}
+
             app.render(req, res, page, params)
         })
 

@@ -4,8 +4,6 @@ import React from 'react'
 import list from '../api/list'
 import ReactPaginate from 'react-paginate'
 import Table from 'rc-table';
-
-const types = require('./types.json')
 const columns = require('./columns.json')
 
 
@@ -19,7 +17,6 @@ class Index extends React.Component {
             const counties = resp.data.entries
             return {counties}
         } catch (err) {
-
             return {error: true}
         }
 
@@ -28,26 +25,24 @@ class Index extends React.Component {
     constructor(props) {
         super(props);
 
-
         this.handleChange = this.handleChange.bind(this)
         this.getData = this.getData.bind(this)
         this.handlePageClick = this.handlePageClick.bind(this)
         this.state = {
             counties: !props.error ? props.counties : false,
             type: "county_name",
-            value: "",
+            value: null,
             page: 1,
             pages: null,
-            data: null
-
+            data: null,
+            key: 1
         }
-
 
     }
 
     handlePageClick(data) {
         const page = data.selected + 1
-        this.getData(this.state.type, this.state.value,page)
+        this.getData(this.state.type, this.state.value, page)
 
     }
 
@@ -55,7 +50,6 @@ class Index extends React.Component {
 
         const name = e.target.name
         const value = e.target.value
-
 
         if (name == "type") {
             this.setState({type: value})
@@ -70,26 +64,21 @@ class Index extends React.Component {
 
     async getData(type, value, page = 1) {
 
-
         try {
+            const resp = await list.getList(type, value, page)
 
-            const resp = await list.getList(type, value)
-            console.log(type, value, page)
             this.setState({
                 data: resp.data.entries,
                 page: resp.data.page,
-                pages: resp.data.pages
+                pages: resp.data.pages,
+                key: this.state.key + 1
             })
-
 
         } catch (err) {
             this.setState({
                 error: true
             })
         }
-        this.setState({
-            page: page
-        })
     }
 
     render(props) {
@@ -130,28 +119,25 @@ class Index extends React.Component {
                                placeholder="Press 'Enter' for query " onKeyPress={this.handleChange}
                                onChange={this.handleChange}></input>
                     }
-                    {this.state.pages?
-                    <ReactPaginate
-                        previousLabel={'<'}
-                        nextLabel={'>'}
-                        pageCount={this.state.pages}
-                        marginPagesDisplayed={0}
-                        pageRangeDisplayed={1}
-                        initialPage={this.state.page - 1}
-                        forcePage={this.state.page - 1}
-                        onPageChange={this.handlePageClick}
-                        containerClassName={'pagination'}
-                        subContainerClassName={'pages pagination'}
-                        activeClassName={'active'}
-                    /> : null
+                    {this.state.pages ?
+                        <ReactPaginate
+                            previousLabel={'<'}
+                            nextLabel={'>'}
+                            pageCount={this.state.pages}
+                            marginPagesDisplayed={0}
+                            pageRangeDisplayed={1}
+                            initialPage={this.state.page - 1}
+                            forcePage={this.state.page - 1}
+                            onPageChange={this.handlePageClick}
+                            containerClassName={'pagination'}
+                            subContainerClassName={'pages pagination'}
+                            activeClassName={'active'}
+                        /> : null
                     }
-                    {this.state.data?
-                        <Table columns={columns.columns} data={this.state.data} />
-                    : null}
-
+                    {this.state.data ?
+                        <Table columns={columns.columns} data={this.state.data} key={this.state.key}/>
+                        : null}
                 </div>
-
-
                 </body>
                 </html>
             </Layout>
