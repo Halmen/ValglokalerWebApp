@@ -12,7 +12,7 @@ yarn dev
 ```
 
 ## Run Jest tests
--This is just a showcase feature, not implemented with the current project 
+- This is just a showcase feature, not implemented with the current project 
 ```bash
 npm run test
 # or
